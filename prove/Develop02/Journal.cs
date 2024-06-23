@@ -2,14 +2,18 @@ using System;
 using System.IO; 
 public class Journal
 {
+    //Creating list for Entries.
     public List<Entry> _entries = new List<Entry>();
     public void AddEntry(Entry newEntry)
     {
+        //This method adds a new entry to the _entries list.
         _entries.Add(newEntry);
     }
     public void DisplayAll()
     {
+        //declaring boolean for check condition.
         bool isEmpty = !_entries.Any();
+        //Check conditon for whether anything is currently populated in the journal if not it displays the message below.
         if (isEmpty)
         {
             Console.WriteLine("Uh-Oh! You have no entries in your journal.");
@@ -17,7 +21,7 @@ public class Journal
         }
         else
         {
-
+            //If there is something populated in the journal it will display each index within _entries list.
             foreach (Entry entry in _entries)
             {
                 entry.Display();
@@ -29,22 +33,26 @@ public class Journal
     {
         
         string filename = file; 
-
+        //using StreamWriter to export each stored entry in each of it's parts within a .csv fashion.
         using (StreamWriter outputFile = new StreamWriter(filename))
         {
             foreach (Entry entry in _entries)
             {
                 outputFile.WriteLine($"{entry._date}~|~{entry._promptText}~|~{entry._entryText}");
             }
+            //Closing the instance of Steamwriter.
             outputFile.Close();
         }
 
     }
     public void LoadFromFile(string file)
     {
+        //Declaring filename for check.
         string filename = file;
+        //Check if the filename exists.
         if (System.IO.File.Exists(filename))
         {
+            //If it exists then read all the lines from the file and create an instance of Entry class to store the entries. that come in.
             string[] lines = System.IO.File.ReadAllLines(filename);
             _entries = new List<Entry>();
             Entry entry;
@@ -62,6 +70,7 @@ public class Journal
         }
         else
         {
+            //If no file exists prints this message.
             Console.WriteLine("No such file exists.");
         }
     }
