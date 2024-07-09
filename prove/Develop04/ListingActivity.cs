@@ -44,7 +44,7 @@ public class ListingActivity : Activity
         DateTime endTime = startTime.AddSeconds(_duration);
         while (DateTime.Now < endTime)
         {
-            Console.Write("\n>");
+            Console.Write(">");
             list.Add(Console.ReadLine());
         }
         return list;
