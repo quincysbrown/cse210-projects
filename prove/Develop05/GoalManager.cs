@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using System.IO;
 
 public class GoalManager
 {
@@ -42,11 +43,11 @@ public class GoalManager
                 }
                 else if (option == 3)
                 {
-
+                    SaveGoals();
                 }
                 else if (option == 4)
                 {
-
+                    LoadGoals();
                 }
                 else if (option == 5)
                 {
@@ -129,11 +130,13 @@ public class GoalManager
                 {
                     SimpleGoal goal = new SimpleGoal(name, description, points);
                     _goals.Add(goal);
+                    break;
                 }
                 else if (goalType == 2)
                 {
                     EternalGoal goal = new EternalGoal(name, description, points);
                     _goals.Add(goal);
+                    break;
                 }
                 else if (goalType == 3)
                 {
@@ -143,6 +146,7 @@ public class GoalManager
                     bonus = int.Parse(Console.ReadLine());
                     ChecklistGoal goal = new ChecklistGoal(name, description, points, target, bonus);
                     _goals.Add(goal);
+                    break;
                 }
                 else
                 {
@@ -163,17 +167,79 @@ public class GoalManager
     {
         Console.WriteLine("Which goal did you accomplish? ");
         int index = int.Parse(Console.ReadLine()) - 1;
-        Console.WriteLine($"Congratulations! You have earned {_goals[index].RecordEvent()} points!");
-        _score += _goals[index].RecordEvent();
+        int pointsEarned = _goals[index].RecordEvent();
+        Console.WriteLine($"Congratulations! You have earned {pointsEarned} points!");
+        _score += pointsEarned;
     }
 
     public void SaveGoals()
     {
-
+        Console.Write("What is the filename for the goal file? ");
+        string filename = Console.ReadLine();
+        //using StreamWriter to export each stored goal and each of it's parts in .csv format.
+        using (StreamWriter outputFile = new StreamWriter(filename))
+        {
+            outputFile.WriteLine(_score);
+            foreach (Goal goal in _goals)
+            {
+                outputFile.WriteLine(goal.GetStringRepresentation());
+            }
+            //Closing the instance of Steamwriter.
+            outputFile.Close();
+        }
     }
 
     public void LoadGoals()
     {
+        Console.Write("What is the filename for the goal file? ");
+        string filename = Console.ReadLine();
+        //Check if the filename exists.
+        if (System.IO.File.Exists(filename))
+        {
+            //If it exists then read all the lines from the file and create initialize score to updated value in first line, 
+            //then add values from all following lines to goal class to store the goals that come in.
+            string[] fullFile = System.IO.File.ReadAllLines(filename);
 
+            if (!int.TryParse(fullFile[0], out _score))
+            {
+                Console.WriteLine("This file has no valid integer for score");
+            }
+
+            string[] lines = fullFile.Skip(1).ToArray();
+
+            foreach (string line in lines)
+            {
+                string[] parts = line.Split("~|~");
+
+                if (parts[0] == "SimpleGoal")
+                {
+                    SimpleGoal goal = new SimpleGoal(parts[1], parts[2], int.Parse(parts[3]));
+                    goal.SetBool(bool.Parse(parts[4]));
+                    _goals.Add(goal);
+                }
+                else if (parts[0] == "EternalGoal")
+                {
+                    EternalGoal goal = new EternalGoal(parts[1], parts[2], int.Parse(parts[3]));
+                    _goals.Add(goal);
+                }
+                else if (parts[0] == "ChecklistGoal")
+                {
+                    ChecklistGoal goal = new ChecklistGoal(parts[1], parts[2], int.Parse(parts[3]), int.Parse(parts[4]), int.Parse(parts[5]));
+                    goal.SetAmount(int.Parse(parts[6]));
+                    _goals.Add(goal);
+                }
+                else
+                {
+                    Console.WriteLine("Unable to read line.");
+                    Thread.Sleep(2000);
+                }
+
+            }
+        }
+        else
+        {
+            //If no file exists prints this message.
+            Console.WriteLine("No such file exists.");
+        }
     }
 }

@@ -20,6 +20,6 @@ public class EternalGoal : Goal
 
     public override string GetStringRepresentation()
     {
-        return "";
+        return $"EternalGoal~|~{base.GetName()}~|~{base.GetDescription()}~|~{base.GetPoints()}";
     }
 }

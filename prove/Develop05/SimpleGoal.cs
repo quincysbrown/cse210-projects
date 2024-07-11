@@ -8,21 +8,25 @@ public class SimpleGoal : Goal
     {
         _isComplete = false;
     }
+    public void SetBool(bool complete)
+    {
+        _isComplete = complete;
+    }
 
     public override int RecordEvent()
     {
+        _isComplete = true;
         IsComplete();
         return base.GetPoints();
     }
 
     public override bool IsComplete()
     {
-        _isComplete = true;
         return _isComplete;
     }
 
     public override string GetStringRepresentation()
     {
-        return "";
+        return $"SimpleGoal~|~{base.GetName()}~|~{base.GetDescription()}~|~{base.GetPoints()}~|~{_isComplete}";
     }
 }

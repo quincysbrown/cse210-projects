@@ -20,6 +20,10 @@ public abstract class Goal
     {
         return _shortName;
     }
+    public string GetDescription()
+    {
+        return _description;
+    }
 
     public abstract int RecordEvent();
 
@@ -27,8 +31,7 @@ public abstract class Goal
 
     public virtual string GetDetailsString()
     {
-        bool complete = IsComplete();
-        if (complete == true)
+        if (IsComplete())
         {
             return $"[X] {_shortName} ({_description})";
         }
