@@ -72,6 +72,7 @@ class Program
 
         _videos.Add(video3);
 
+        Console.Clear();
         foreach (Video video in _videos)
         {
             video.Display();
